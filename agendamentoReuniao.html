@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <link rel="stylesheet" href="agendamentoReuniao.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Reunião</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { max-width: 500px; margin: auto; }
+        input, textarea, select { width: 100%; margin-bottom: 10px; padding: 8px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+<header>
+    <h2>Agendamentos de Reuniões</h2>
+</header>
+    <form id="formReuniao">
+        <input type="text" id="assunto" placeholder="Assunto da Reunião" required>
+        <textarea id="descricao" placeholder="Descrição" required></textarea>
+        <input type="datetime-local" id="data_hora" required>
+
+        <label for="colaboradores">Selecione os Colaboradores:</label>
+        <select id="colaboradores" multiple required>
+            <!-- Opções serão carregadas via JavaScript -->
+        </select>
+
+        <button type="submit">Agendar</button>
+    </form>
+
+    <script>
+        // Buscar colaboradores cadastrados
+        fetch('http://localhost:3000/api/colaboradores')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('colaboradores');
+                data.forEach(colab => {
+                    const option = document.createElement('option');
+                    option.value = colab.id;
+                    option.text = colab.nome + ' - ' + colab.cargo;
+                    select.appendChild(option);
+                });
+            });
+
+        document.getElementById('formReuniao').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const selected = Array.from(document.getElementById('colaboradores').selectedOptions).map(opt => Number(opt.value));
+
+            const reuniao = {
+                assunto: document.getElementById('assunto').value,
+                descricao: document.getElementById('descricao').value,
+                data_hora: document.getElementById('data_hora').value,
+                colaboradores: selected
+            };
+
+            fetch('http://localhost:3000/api/reunioes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reuniao)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Reunião agendada com sucesso!');
+                document.getElementById('formReuniao').reset();
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+    </script>
+
+</body>
+</html>

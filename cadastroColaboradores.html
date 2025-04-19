@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <link rel="stylesheet" href="cadastroColaboradores.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Colaboradores</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { max-width: 400px; margin: auto; }
+        input, select { width: 100%; margin-bottom: 10px; padding: 8px; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+ <header>
+    <h2>Cadastrar Colaborador</h2>
+</header>
+    <form id="formColaborador">
+        <input type="text" id="nome" placeholder="Nome Completo" required>
+        <input type="text" id="cpf" placeholder="CPF" required>
+        <input type="text" id="telefone" placeholder="Telefone" required>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="text" id="cargo" placeholder="Cargo" required>
+        <select id="setor" required>
+            <option value="">Selecione o Setor</option>
+            <option value="1">Recebimento</option>
+            <option value="2">Expedição</option>
+            <option value="3">Garantia</option>
+            <option value="4">Devolução</option>
+        </select>
+        <button type="submit">Salvar Colaborador</button>
+    </form>
+
+    <script>
+        document.getElementById('formColaborador').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const colaborador = {
+                nome: document.getElementById('nome').value,
+                cpf: document.getElementById('cpf').value,
+                telefone: document.getElementById('telefone').value,
+                email: document.getElementById('email').value,
+                cargo: document.getElementById('cargo').value,
+                setor_id: document.getElementById('setor').value
+            };
+
+            fetch('http://localhost:3000/api/colaboradores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(colaborador)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Colaborador cadastrado com sucesso!');
+                document.getElementById('formColaborador').reset();
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+    </script>
+
+</body>
+</html>
