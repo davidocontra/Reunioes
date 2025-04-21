@@ -33,11 +33,8 @@ class CadastroUsuario {
     
     cadastrarReuniao(assunto, descricao, data_hora, colaboradores) {
         return new Promise((resolve, reject) => {
-            // Armazenar os IDs dos colaboradores como uma string separada por vírgulas
-           // const colaboradoresStr = colaboradores.join(",");  // Converte o array de colaboradores em uma string
-
-            // SQL para inserir a reunião
-            const sql = `INSERT INTO reunioes (assunto, descricao, data_hora) VALUES (?, ?, ?, ?)`;
+             
+            const sql = `INSERT INTO reunioes (assunto, descricao, data_hora,colaborador_id) VALUES  (?, ?, ?, ?)`;
 
             // Executa a query
             this.conexao.query(sql, [assunto, descricao, data_hora, colaboradores], (erro, resultado) => {

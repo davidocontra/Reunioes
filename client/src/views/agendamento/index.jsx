@@ -44,7 +44,7 @@ function AgendamentoReuniao() {
       colaboradores: formData.colaboradores,  // Envia os colaboradores selecionados
     };
 
-    fetch('http://localhost:5000/api/reunioes', {
+    fetch('http://localhost:5000/reunioes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reuniao),
