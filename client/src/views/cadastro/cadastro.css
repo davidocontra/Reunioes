@@ -1,0 +1,14 @@
+form input:focus,
+form select:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.card {
+  border-radius: 10px;
+}
+
+button[type="submit"] {
+  padding: 10px;
+  font-size: 1rem;
+}

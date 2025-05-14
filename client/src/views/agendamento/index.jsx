@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Card, FloatingLabel } from 'react-bootstrap';
+import { FaUsers, FaCalendarAlt, FaAlignLeft, FaRegCommentDots } from 'react-icons/fa';
+import './agendamento.css';
 
 function AgendamentoReuniao() {
-  const [colaboradores, setColaboradores] = useState([]);  // Estado para armazenar colaboradores
+  const [colaboradores, setColaboradores] = useState([]);
   const [formData, setFormData] = useState({
     assunto: '',
     descricao: '',
     data_hora: '',
-    colaboradores: [],  // IDs dos colaboradores selecionados
+    colaboradores: [],
   });
 
-  // Buscar colaboradores cadastrados ao carregar o componente
   useEffect(() => {
     fetch('http://localhost:5000/colaboradores')
       .then((response) => response.json())
-      .then((data) => setColaboradores(data))  // Salva os colaboradores no estado
+      .then((data) => setColaboradores(data))
       .catch((error) => console.error('Erro ao buscar colaboradores:', error));
   }, []);
 
@@ -27,7 +28,7 @@ function AgendamentoReuniao() {
   };
 
   const handleSelectChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map((opt) => opt.value);  // Pega os valores dos colaboradores selecionados
+    const selectedOptions = Array.from(e.target.selectedOptions).map((opt) => opt.value);
     setFormData({
       ...formData,
       colaboradores: selectedOptions,
@@ -41,7 +42,7 @@ function AgendamentoReuniao() {
       assunto: formData.assunto,
       descricao: formData.descricao,
       data_hora: formData.data_hora,
-      colaboradores: formData.colaboradores,  // Envia os colaboradores selecionados
+      colaboradores: formData.colaboradores,
     };
 
     fetch('http://localhost:5000/reunioes', {
@@ -56,7 +57,7 @@ function AgendamentoReuniao() {
           assunto: '',
           descricao: '',
           data_hora: '',
-          colaboradores: [],  // Limpa os dados do formulário após o envio
+          colaboradores: [],
         });
       })
       .catch((error) => console.error('Erro ao agendar reunião:', error));
@@ -65,64 +66,71 @@ function AgendamentoReuniao() {
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
-        <Col md={6}>
-          <h2 className="text-center">Agendar Reunião</h2>
-          <br />
-          <Form id="formReuniao" onSubmit={handleSubmit}>
-            <Form.Group>
-              <Form.Control
-                type="text"
-                placeholder="Assunto da Reunião"
-                name="assunto"
-                value={formData.assunto}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <br />
-            <Form.Group>
-              <Form.Control
-                as="textarea"
-                placeholder="Descrição"
-                name="descricao"
-                value={formData.descricao}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <br />
-            <Form.Group>
-              <Form.Control
-                type="datetime-local"
-                name="data_hora"
-                value={formData.data_hora}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <br />
-            <Form.Group>
-              <Form.Label>Selecione os Colaboradores</Form.Label>
-              <Form.Control
-                as="select"
-                multiple
-                name="colaboradores"
-                value={formData.colaboradores}
-                onChange={handleSelectChange}
-                required
-              >
-                {colaboradores.map((colab) => (
-                  <option key={colab.id} value={colab.id}>
-                    {colab.nome} - {colab.cargo}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <br />
-            <Button type="submit" variant="primary" className="w-100">
-              Agendar
-            </Button>
-          </Form>
+        <Col md={8} lg={6}>
+          <Card className="p-4 shadow">
+            <Card.Body>
+              <h3 className="text-center mb-4">📅 Agendamento de Reunião</h3>
+              <Form id="formReuniao" onSubmit={handleSubmit}>
+                <FloatingLabel label="Assunto da Reunião" className="mb-3">
+                  <Form.Control
+                    type="text"
+                    placeholder="Assunto"
+                    name="assunto"
+                    value={formData.assunto}
+                    onChange={handleChange}
+                    required
+                  />
+                </FloatingLabel>
+
+                <FloatingLabel label="Descrição da Reunião" className="mb-3">
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Descrição"
+                    style={{ height: '100px' }}
+                    name="descricao"
+                    value={formData.descricao}
+                    onChange={handleChange}
+                    required
+                  />
+                </FloatingLabel>
+
+                <Form.Group className="mb-3">
+                  <Form.Label><FaCalendarAlt className="me-2" />Data e Hora</Form.Label>
+                  <Form.Control
+                    type="datetime-local"
+                    name="data_hora"
+                    value={formData.data_hora}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label><FaUsers className="me-2" />Participantes</Form.Label>
+                  <Form.Control
+                    as="select"
+                    multiple
+                    name="colaboradores"
+                    value={formData.colaboradores}
+                    onChange={handleSelectChange}
+                    required
+                    className="select-multiple"
+                  >
+                    {colaboradores.map((colab) => (
+                      <option key={colab.id} value={colab.id}>
+                        {colab.nome} ({colab.cargo})
+                      </option>
+                    ))}
+                  </Form.Control>
+                  <Form.Text muted>Segure Ctrl (Windows) ou ⌘ Command (Mac) para selecionar vários.</Form.Text>
+                </Form.Group>
+
+                <Button type="submit" variant="primary" className="w-100">
+                  Agendar Reunião
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </Container>
